@@ -7,10 +7,15 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake_mo
 find_package(LibUSB1 REQUIRED)
 
 if (NOT WIN32)
-add_definitions(-DHAVE_CONFIG_H)
-configure_file(config.h.in include/config.h)
-include_directories(${CMAKE_CURRENT_BINARY_DIR}/include)
+    add_definitions(-DHAVE_CONFIG_H)
+    configure_file(config.h.in include/config.h)
+    include_directories(${CMAKE_CURRENT_BINARY_DIR}/include)
+    if (APPLE) # Add Home frameworks as I install my frameworks there
+        set(CMAKE_MACOSX_RPATH 1)
+        set(CMAKE_INSTALL_RPATH "$ENV{HOME}/Library/Frameworks")
+    endif()
 endif()
+
 
 add_executable(${PROJECT_NAME} main.c
         portable.h
@@ -59,7 +64,6 @@ if (NOT WIN32) # No idea how to make it work under windows
         )
     endif ()
 endif ()
-
 
 # Installation
 install(TARGETS ${PROJECT_NAME} dfu-suffix dfu-prefix)
