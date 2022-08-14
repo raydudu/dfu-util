@@ -3,7 +3,7 @@
 
 #define PACKAGE "@PROJECT_NAME@"
 #define PACKAGE_VERSION "@PROJECT_VERSION@"
-#define PACKAGE_BUGREPORT "NOT_DEFINED_YET"
+#define PACKAGE_BUGREPORT "https://github.com/raydudu/usbipd-libusb/issues/new"
 #define PACKAGE_STRING PACKAGE " " PACKAGE_VERSION
 
 #define HAVE_UNISTD_H
