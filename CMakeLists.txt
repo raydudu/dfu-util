@@ -4,7 +4,7 @@ project(dfu-util VERSION 0.11 LANGUAGES C)
 set(CMAKE_C_STANDARD 99)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules/")
-find_package(LibUSB REQUIRED)
+find_package(LibUSB1 REQUIRED)
 
 if (NOT WIN32)
 add_definitions(-DHAVE_CONFIG_H)
@@ -22,9 +22,9 @@ add_executable(${PROJECT_NAME} main.c
         dfuse_mem.c dfuse_mem.h
         quirks.c quirks.h
         usb_dfu.h)
-target_include_directories(${PROJECT_NAME} PRIVATE ${LIBUSB_1_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBUSB_1_LIBRARIES})
-target_compile_definitions(${PROJECT_NAME} PRIVATE ${LIBUSB_1_DEFINITIONS})
+target_include_directories(${PROJECT_NAME} PRIVATE ${LIBUSB1_INCLUDE_DIRS})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBUSB1_LIBRARIES})
+target_compile_definitions(${PROJECT_NAME} PRIVATE ${LIBUSB1_DEFINITIONS})
 
 add_executable(dfu-suffix suffix.c
         portable.h
