@@ -3,17 +3,17 @@ project(dfu-util VERSION 0.11 LANGUAGES C)
 
 set(CMAKE_C_STANDARD 99)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules/")
-find_package(LibUSB1 REQUIRED)
+find_library(LIBUSB_LIBRARIES NAMES usb-1.0 REQUIRED
+        PATH_SUFFIXES "lib" "lib32" "lib64")
+find_path(LIBUSB_INCLUDE_DIR NAMES libusb.h REQUIRED
+        PATH_SUFFIXES "include" "libusb" "libusb-1.0")
+
+set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 
 if (NOT WIN32)
     add_definitions(-DHAVE_CONFIG_H)
     configure_file(config.h.in include/config.h)
     include_directories(${CMAKE_CURRENT_BINARY_DIR}/include)
-    if (APPLE) # Add Home frameworks as I install my frameworks there
-        set(CMAKE_MACOSX_RPATH 1)
-        set(CMAKE_INSTALL_RPATH "$ENV{HOME}/Library/Frameworks")
-    endif()
 endif()
 
 
@@ -27,9 +27,8 @@ add_executable(${PROJECT_NAME} main.c
         dfuse_mem.c dfuse_mem.h
         quirks.c quirks.h
         usb_dfu.h)
-target_include_directories(${PROJECT_NAME} PRIVATE ${LIBUSB1_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBUSB1_LIBRARIES})
-target_compile_definitions(${PROJECT_NAME} PRIVATE ${LIBUSB1_DEFINITIONS})
+target_include_directories(${PROJECT_NAME} PRIVATE ${LIBUSB_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBUSB_LIBRARIES})
 
 add_executable(dfu-suffix suffix.c
         portable.h
@@ -58,13 +57,14 @@ if (NOT WIN32) # No idea how to make it work under windows
                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/doc
                 COMMAND ${DOCKER} dfu-prefix.1.md -s -t man -o dfu-prefix.1
         )
-        add_custom_target(man
+        add_custom_target(man ALL
                 DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/doc/dfu-prefix.1
                         ${CMAKE_CURRENT_SOURCE_DIR}/doc/dfu-suffix.1
         )
+        install(FILES doc/dfu-suffix.1 doc/dfu-prefix.1 DESTINATION ${CMAKE_INSTALL_PREFIX}/man/man1)
     endif ()
 endif ()
 
 # Installation
 install(TARGETS ${PROJECT_NAME} dfu-suffix dfu-prefix)
-install(FILES doc/dfu-util.1 doc/dfu-suffix.1 doc/dfu-suffix.1 DESTINATION ${CMAKE_INSTALL_PREFIX}/man/man1)
+install(FILES doc/dfu-util.1 DESTINATION ${CMAKE_INSTALL_PREFIX}/man/man1)

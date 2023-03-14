@@ -1,2 +1,4 @@
 /cmake-build*
 .DS_Store
+/doc/dfu-suffix.1
+/doc/dfu-prefix.1

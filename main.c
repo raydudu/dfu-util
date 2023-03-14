@@ -405,7 +405,7 @@ int main(int argc, char **argv)
 		printf("Waiting for device, exit with ctrl-C\n");
 	}
 
-	ret = libusb_init(&ctx);
+	ret = libusb_init_context(&ctx, NULL, 0);
 	if (ret)
 		errx(EX_IOERR, "unable to initialize libusb: %s", libusb_error_name(ret));
 

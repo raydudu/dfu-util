@@ -384,7 +384,7 @@ int dfuse_do_upload(struct dfu_if *dif, int xfer_size, int fd,
 		dfuse_special_command(dif, dfuse_address, SET_ADDRESS);
 		dfu_abort_to_idle(dif);
 	} else {
-		/* Boot loader decides the start address, unknown to us */
+		/* Bootloader decides the start address, unknown to us */
 		/* Use a short length to lower risk of running out of bounds */
 		if (!upload_limit) {
 			warnx("Unbound upload not supported on DfuSe devices");
